@@ -4,6 +4,8 @@ Changelog
 Development
 ***********
 
+- Backend: Migrate from pandas to polars
+
 0.56.0 (02.05.2023)
 *******************
 

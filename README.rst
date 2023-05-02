@@ -290,8 +290,8 @@ Library
 
 .. code-block:: python
 
-    >>> import pandas as pd
-    >>> pd.options.display.max_columns = 8
+    >>> import polars as pl
+    >>> _ = pl.Config.set_tbl_hide_dataframe_shape(True)
     >>> from wetterdienst import Settings
     >>> from wetterdienst.provider.dwd.observation import DwdObservationRequest
     >>> settings = Settings( # default
@@ -307,28 +307,29 @@ Library
     ...    settings=settings
     ... ).filter_by_station_id(station_id=(1048, 4411))
     >>> request.df.head()  # station list
-        station_id                 from_date                   to_date  height  \
-    ...      01048 1934-01-01 00:00:00+00:00 ... 00:00:00+00:00   228.0
-    ...      04411 1979-12-01 00:00:00+00:00 ... 00:00:00+00:00   155.0
-    <BLANKLINE>
-         latitude  longitude                    name    state
-    ...   51.1278    13.7543       Dresden-Klotzsche  Sachsen
-    ...   49.9195     8.9671  Schaafheim-Schlierbach   Hessen
-
+    ┌────────────┬──────────────┬──────────────┬────────┬──────────┬───────────┬─────────────┬─────────┐
+    │ station_id ┆ from_date    ┆ to_date      ┆ height ┆ latitude ┆ longitude ┆ name        ┆ state   │
+    │ ---        ┆ ---          ┆ ---          ┆ ---    ┆ ---      ┆ ---       ┆ ---         ┆ ---     │
+    │ str        ┆ datetime[μs, ┆ datetime[μs, ┆ f64    ┆ f64      ┆ f64       ┆ str         ┆ str     │
+    │            ┆ UTC]         ┆ UTC]         ┆        ┆          ┆           ┆             ┆         │
+    ╞════════════╪══════════════╪══════════════╪════════╪══════════╪═══════════╪═════════════╪═════════╡
+    │ 01048      ┆ 1934-01-01   ┆ ...          ┆ 228.0  ┆ 51.1278  ┆ 13.7543   ┆ Dresden-Klo ┆ Sachsen │
+    │            ┆ 00:00:00 UTC ┆ 00:00:00 UTC ┆        ┆          ┆           ┆ tzsche      ┆         │
+    │ 04411      ┆ 1979-12-01   ┆ ...          ┆ 155.0  ┆ 49.9195  ┆ 8.9671    ┆ Schaafheim- ┆ Hessen  │
+    │            ┆ 00:00:00 UTC ┆ 00:00:00 UTC ┆        ┆          ┆           ┆ Schlierbach ┆         │
+    └────────────┴──────────────┴──────────────┴────────┴──────────┴───────────┴─────────────┴─────────┘
     >>> request.values.all().df.head()  # values
-      station_id          dataset      parameter                      date  value  \
-    0      01048  climate_summary  wind_gust_max 1990-01-01 00:00:00+00:00    NaN
-    1      01048  climate_summary  wind_gust_max 1990-01-02 00:00:00+00:00    NaN
-    2      01048  climate_summary  wind_gust_max 1990-01-03 00:00:00+00:00    5.0
-    3      01048  climate_summary  wind_gust_max 1990-01-04 00:00:00+00:00    9.0
-    4      01048  climate_summary  wind_gust_max 1990-01-05 00:00:00+00:00    7.0
-    <BLANKLINE>
-       quality
-    0      NaN
-    1      NaN
-    2     10.0
-    3     10.0
-    4     10.0
+    ┌────────────┬─────────────────┬───────────────┬─────────────────────────┬───────┬─────────┐
+    │ station_id ┆ dataset         ┆ parameter     ┆ date                    ┆ value ┆ quality │
+    │ ---        ┆ ---             ┆ ---           ┆ ---                     ┆ ---   ┆ ---     │
+    │ str        ┆ str             ┆ str           ┆ datetime[μs, UTC]       ┆ f64   ┆ f64     │
+    ╞════════════╪═════════════════╪═══════════════╪═════════════════════════╪═══════╪═════════╡
+    │ 01048      ┆ climate_summary ┆ wind_gust_max ┆ 1990-01-01 00:00:00 UTC ┆ null  ┆ null    │
+    │ 01048      ┆ climate_summary ┆ wind_gust_max ┆ 1990-01-02 00:00:00 UTC ┆ null  ┆ null    │
+    │ 01048      ┆ climate_summary ┆ wind_gust_max ┆ 1990-01-03 00:00:00 UTC ┆ 5.0   ┆ 10.0    │
+    │ 01048      ┆ climate_summary ┆ wind_gust_max ┆ 1990-01-04 00:00:00 UTC ┆ 9.0   ┆ 10.0    │
+    │ 01048      ┆ climate_summary ┆ wind_gust_max ┆ 1990-01-05 00:00:00 UTC ┆ 7.0   ┆ 10.0    │
+    └────────────┴─────────────────┴───────────────┴─────────────────────────┴───────┴─────────┘
 
 Client
 ======
